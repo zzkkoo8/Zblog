@@ -121,6 +121,7 @@ jobs:
           };
 
           export const profileConfig: ProfileConfig = {
+            avatar: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTYgMjU2Ij48cmVjdCB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgcng9IjU2IiBmaWxsPSIjMTgxODFiIi8+PHRleHQgeD0iMTI4IiB5PSIxNjciIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0NCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0id2hpdGUiPlo8L3RleHQ+PC9zdmc+",
             name: "zzkkoo8",
             bio: "记录技术实践、故障复盘与工程思考。",
             links: [
