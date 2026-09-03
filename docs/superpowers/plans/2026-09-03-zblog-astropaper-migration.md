@@ -6,7 +6,7 @@
 
 **Architecture:** GitHub `main` 是 SSOT。一次性迁移 workflow 从固定 AstroPaper commit 复制源码并应用 Zblog 配置；迁移完成后删除临时 workflow，由长期 CI 和 Pages workflow 维护。
 
-**Tech Stack:** AstroPaper 6.1.0、Astro 7、Node 22、pnpm、Pagefind、GitHub Actions、GitHub Pages
+**Tech Stack:** AstroPaper 6.1.0、Astro 7、Node 24、pnpm 11.3.0、Pagefind、GitHub Actions、GitHub Pages
 
 **Spec:** `docs/superpowers/specs/2026-09-03-zblog-astropaper-migration-design.md`
 
@@ -17,6 +17,7 @@
 - Astro base：`/Zblog`。
 - 不保留 AstroPaper 演示文章或作者身份。
 - 文章目录采用 AstroPaper v6 的 `src/content/posts/`。
+- CI 运行时使用 AstroPaper 上游同款 Node 24 + pnpm 11.3.0。
 - 不引入 CMS、数据库、评论系统或自定义域名。
 - 只有验证通过的源码允许进入 `main`。
 
@@ -35,7 +36,7 @@
 - [ ] 创建一次性 workflow，克隆固定 commit。
 - [ ] 复制 AstroPaper 源码，排除上游 `.git`、`.github`、`docs` 和 `src/content/posts/`。
 - [ ] 写入 Zblog `astro-paper.config.ts`、`astro.config.ts`、`AGENTS.md`、`README.md` 和 `src/content/posts/about-zblog.md`。
-- [ ] 执行 `pnpm install --frozen-lockfile`、`pnpm build`、`pnpm format:check`。
+- [ ] 执行 `pnpm install --frozen-lockfile`、`pnpm lint`、`pnpm format:check`、`pnpm build`。
 - [ ] 只有全部成功后才提交生成源码到功能分支。
 
 ### Task 2: 清理迁移脚手架并建立正式 CI
@@ -49,8 +50,8 @@
 - Produces: PR/main 持续验证门禁
 
 - [ ] 删除一次性迁移 workflow。
-- [ ] CI 使用 Node 22 和 pnpm lockfile。
-- [ ] 运行 `pnpm install --frozen-lockfile`、`pnpm build`、`pnpm format:check`。
+- [ ] CI 使用 Node 24、pnpm 11.3.0 和 frozen lockfile。
+- [ ] 运行 `pnpm install --frozen-lockfile`、`pnpm lint`、`pnpm format:check`、`pnpm build`。
 
 ### Task 3: 配置 GitHub Pages
 
