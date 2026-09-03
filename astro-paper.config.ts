@@ -34,6 +34,11 @@ export default defineAstroPaperConfig({
       url: "https://github.com/zzkkoo8/Zblog",
       linkTitle: "Zblog GitHub 仓库",
     },
+    {
+      name: "book",
+      url: "https://zwiki.gitbook.io/zwiki-docs/",
+      linkTitle: "Zwiki 技术知识库",
+    },
   ],
   shareLinks: [
     { name: "telegram", url: "https://t.me/share/url?url=" },
