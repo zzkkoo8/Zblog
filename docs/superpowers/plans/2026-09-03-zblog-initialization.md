@@ -12,7 +12,7 @@
 
 ## Global Constraints
 
-- 上游 Fuwari 固定为 `6d39b0dec41282e7852e23e032998a5789abee28`。
+- 上游 Fuwari 固定为 `415fb97054e57bb85da86e2ca4ea4a1ae7266219`。
 - GitHub Pages URL 为 `https://zzkkoo8.github.io/Zblog/`。
 - Astro `site` 为 `https://zzkkoo8.github.io`，`base` 为 `/Zblog`。
 - 文章统一位于 `src/content/posts/`。

@@ -20,7 +20,7 @@ GitHub Pages
 
 ## 技术选型
 
-- 上游主题：`saicaca/fuwari`，初始化时固定到已审核提交 `6d39b0dec41282e7852e23e032998a5789abee28`。
+- 上游主题：`saicaca/fuwari`，初始化时固定到已审核提交 `415fb97054e57bb85da86e2ca4ea4a1ae7266219`。
 - Astro：跟随该 Fuwari 提交锁定版本，不单独升级。
 - 包管理器：pnpm，跟随上游 `pnpm-lock.yaml`。
 - 部署：GitHub Actions + GitHub Pages。
