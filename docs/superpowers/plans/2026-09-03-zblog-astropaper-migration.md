@@ -16,7 +16,7 @@
 - Pages origin：`https://zzkkoo8.github.io`。
 - Astro base：`/Zblog`。
 - 不保留 AstroPaper 演示文章或作者身份。
-- 文章目录采用 `src/data/blog/`。
+- 文章目录采用 AstroPaper v6 的 `src/content/posts/`。
 - 不引入 CMS、数据库、评论系统或自定义域名。
 - 只有验证通过的源码允许进入 `main`。
 
@@ -33,9 +33,8 @@
 - Produces: 可构建的 Zblog AstroPaper 分支
 
 - [ ] 创建一次性 workflow，克隆固定 commit。
-- [ ] 清除旧 Fuwari 源码但保留 `.git`、迁移 workflow、`docs/superpowers/`。
-- [ ] 复制 AstroPaper 源码，排除上游 `.git`、`.github`、演示文章。
-- [ ] 写入 Zblog `astro-paper.config.ts`、`astro.config.ts`、`AGENTS.md`、`README.md` 和首篇文章。
+- [ ] 复制 AstroPaper 源码，排除上游 `.git`、`.github`、`docs` 和 `src/content/posts/`。
+- [ ] 写入 Zblog `astro-paper.config.ts`、`astro.config.ts`、`AGENTS.md`、`README.md` 和 `src/content/posts/about-zblog.md`。
 - [ ] 执行 `pnpm install --frozen-lockfile`、`pnpm build`、`pnpm format:check`。
 - [ ] 只有全部成功后才提交生成源码到功能分支。
 
