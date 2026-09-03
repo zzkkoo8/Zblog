@@ -1,0 +1,32 @@
+name: 内容纠错
+description: 报告文章中的错误、失效链接或需要补充的内容
+title: "[内容纠错] "
+labels: []
+body:
+  - type: input
+    id: page
+    attributes:
+      label: 文章链接
+      description: 请粘贴发现问题的 Zblog 页面地址。
+      placeholder: https://zzkkoo8.github.io/Zblog/posts/...
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 问题描述
+      description: 请说明哪里有问题；如果是命令或技术结论，请尽量附上版本、报错或依据。
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: 建议修改
+      description: 可选。知道正确写法时可以直接给出建议。
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我已确认该问题仍存在于当前公开页面。
+          required: true
