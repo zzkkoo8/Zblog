@@ -44,7 +44,7 @@ GitHub Pages
 - GitHub：`https://github.com/zzkkoo8/Zblog`
 - Zwiki：`https://zwiki.gitbook.io/zwiki-docs/`
 - 搜索：Pagefind
-- 文章目录：采用 AstroPaper 默认 `src/data/blog/`
+- 文章目录：采用 AstroPaper v6 默认 `src/content/posts/`
 
 ## 内容边界
 
