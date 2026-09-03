@@ -46,18 +46,19 @@ GitHub Pages
 - 搜索：Pagefind
 - 文章目录：采用 AstroPaper v6 默认 `src/content/posts/`
 
+## 发布策略
+
+- CI 运行时与 AstroPaper 上游一致：Node 24、pnpm 11.3.0。
+- PR CI：`pnpm install --frozen-lockfile`、`pnpm lint`、`pnpm format:check`、`pnpm build`。
+- Pages：使用 Astro 官方推荐 `withastro/action@v5` + `actions/deploy-pages@v4`。
+- 仅 `main` push 触发正式部署。
+- GitHub Pages Source 必须为 `GitHub Actions`。
+
 ## 内容边界
 
 - Zblog：技术文章、教程、复盘、方案分析、工程思考。
 - Zwiki：长期复用的操作手册、命令、故障排查和知识条目。
 - Blog 可链接 Zwiki，但避免复制维护同一份权威文档。
-
-## 发布策略
-
-- PR CI：Node 22，`pnpm install --frozen-lockfile`，`pnpm build`，`pnpm format:check`。
-- Pages：使用 Astro 官方推荐 `withastro/action@v5` + `actions/deploy-pages@v4`。
-- 仅 `main` push 触发正式部署。
-- GitHub Pages Source 必须为 `GitHub Actions`。
 
 ## 验收
 
