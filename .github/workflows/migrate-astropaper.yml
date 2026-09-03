@@ -1,0 +1,320 @@
+name: Migrate Zblog to AstroPaper
+
+on:
+  push:
+    branches: [feat/astropaper-zblog]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout Zblog
+        uses: actions/checkout@v4
+        with:
+          ref: feat/astropaper-zblog
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "11.3.0"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+        continue-on-error: true
+
+      - name: Copy pinned AstroPaper template
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f package.json ]; then
+            echo "AstroPaper source already exists; skipping template copy."
+            exit 0
+          fi
+
+          git clone --quiet https://github.com/satnaing/astro-paper.git .upstream
+          git -C .upstream checkout --quiet 35cfa7fbe0b897306d27670d3819e55d5205f3dd
+
+          rsync -a \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='docs/' \
+            --exclude='src/content/posts/' \
+            .upstream/ ./
+          rm -rf .upstream
+          rm -rf src/content/posts
+          mkdir -p src/content/posts src/i18n/lang
+
+          cat > astro-paper.config.ts <<'EOF'
+          import { defineAstroPaperConfig } from "./src/types/config";
+
+          export default defineAstroPaperConfig({
+            site: {
+              url: "https://zzkkoo8.github.io",
+              title: "Zblog",
+              description: "个人技术博客，记录技术实践、故障复盘与工程思考。",
+              author: "zzkkoo8",
+              profile: "https://github.com/zzkkoo8",
+              ogImage: "default-og.jpg",
+              lang: "zh-CN",
+              timezone: "Asia/Singapore",
+              dir: "ltr",
+            },
+            posts: {
+              perPage: 6,
+              perIndex: 6,
+              scheduledPostMargin: 15 * 60 * 1000,
+            },
+            features: {
+              lightAndDarkMode: true,
+              dynamicOgImage: true,
+              showArchives: true,
+              showBackButton: true,
+              editPost: {
+                enabled: true,
+                url: "https://github.com/zzkkoo8/Zblog/edit/main/",
+              },
+              search: "pagefind",
+            },
+            socials: [
+              {
+                name: "github",
+                url: "https://github.com/zzkkoo8/Zblog",
+                linkTitle: "Zblog GitHub 仓库",
+              },
+            ],
+            shareLinks: [
+              { name: "telegram", url: "https://t.me/share/url?url=" },
+              { name: "mail", url: "mailto:?subject=Zblog%20文章&body=" },
+            ],
+          });
+          EOF
+
+          python3 <<'PY'
+          from pathlib import Path
+          path = Path("astro.config.ts")
+          text = path.read_text()
+          text = text.replace(
+              '  site: config.site.url,\n',
+              '  site: config.site.url,\n  base: "/Zblog",\n',
+              1,
+          )
+          text = text.replace(
+              '    locales: ["en"],\n    defaultLocale: "en",',
+              '    locales: ["zh-CN"],\n    defaultLocale: "zh-CN",',
+              1,
+          )
+          path.write_text(text)
+          PY
+
+          cat > src/i18n/lang/zh-CN.ts <<'EOF'
+          import type { UIStrings } from "../types";
+
+          export default {
+            nav: {
+              home: "首页",
+              posts: "文章",
+              tags: "标签",
+              about: "关于",
+              archives: "归档",
+              search: "搜索",
+            },
+            post: {
+              publishedAt: "发布于",
+              updatedAt: "更新于",
+              sharePostIntro: "分享文章：",
+              sharePostOn: "分享到 {{platform}}",
+              sharePostViaEmail: "通过邮件分享",
+              tagLabel: "标签",
+              backToTop: "返回顶部",
+              goBack: "返回",
+              editPage: "编辑文章",
+              previousPost: "上一篇",
+              nextPost: "下一篇",
+            },
+            pagination: {
+              prev: "上一页",
+              next: "下一页",
+              page: "第",
+            },
+            home: {
+              socialLinks: "链接",
+              featured: "推荐文章",
+              recentPosts: "最近文章",
+              allPosts: "全部文章",
+            },
+            footer: {
+              copyright: "版权",
+              allRightsReserved: "保留所有权利。",
+            },
+            pages: {
+              tagTitle: "标签",
+              tagDesc: "包含此标签的全部文章",
+              tagsTitle: "标签",
+              tagsDesc: "博客文章使用的全部标签。",
+              postsTitle: "文章",
+              postsDesc: "全部已发布文章。",
+              archivesTitle: "归档",
+              archivesDesc: "按时间归档的全部文章。",
+              searchTitle: "搜索",
+              searchDesc: "搜索博客文章。",
+            },
+            a11y: {
+              skipToContent: "跳转到正文",
+              openMenu: "打开菜单",
+              closeMenu: "关闭菜单",
+              toggleTheme: "切换主题",
+              searchPlaceholder: "搜索文章...",
+              noResults: "没有找到结果",
+              goToPreviousPage: "前往上一页",
+              goToNextPage: "前往下一页",
+            },
+            notFound: {
+              title: "404 未找到",
+              message: "页面不存在",
+              goHome: "返回首页",
+            },
+          } satisfies UIStrings;
+          EOF
+
+          cat > src/content/posts/about-zblog.md <<'EOF'
+          ---
+          title: Zblog：个人技术博客
+          author: zzkkoo8
+          pubDatetime: 2026-09-03T13:00:00+08:00
+          slug: about-zblog
+          featured: true
+          draft: false
+          tags:
+            - Zblog
+            - 技术博客
+          description: Zblog 的定位、内容边界与维护方式。
+          ---
+
+          Zblog 用于记录技术实践、故障复盘、方案分析和工程思考。
+
+          ## Zblog 与 Zwiki
+
+          两者都以 GitHub 为唯一事实源，但承担不同职责：
+
+          - **Zblog**：适合阅读的技术文章、教程、实践总结和工程思考。
+          - **Zwiki**：长期复用的命令、操作手册、知识条目和故障排查手册。
+
+          完整操作手册优先维护在 [Zwiki](https://zwiki.gitbook.io/zwiki-docs/)，博客文章只引用，不重复维护同一份权威内容。
+
+          ## 维护方式
+
+          ```text
+          ChatGPT / Codex / 人工
+                    ↓
+              GitHub Markdown
+                    ↓
+              GitHub Actions
+                    ↓
+               AstroPaper
+                    ↓
+              GitHub Pages
+          ```
+
+          后续文章统一维护在 `src/content/posts/`。
+          EOF
+
+          cat > AGENTS.md <<'EOF'
+          # Zblog Agent Rules
+
+          ## Source of truth
+
+          - GitHub `main` is the single source of truth (SSOT).
+          - Do not maintain another authoritative copy of posts outside this repository.
+
+          ## Content
+
+          - Blog posts live in `src/content/posts/`.
+          - Zblog is for technical articles, tutorials, retrospectives, solution analysis and engineering notes.
+          - Reusable commands, runbooks and troubleshooting manuals belong in Zwiki; link to Zwiki instead of duplicating them here.
+          - Never commit passwords, API keys, tokens, customer data or other sensitive information.
+
+          ## Changes
+
+          - Preserve valid AstroPaper frontmatter.
+          - Theme, dependency or build changes require a clean CI build before merge.
+          - Prefer small changes and never upgrade AstroPaper/Astro dependencies as part of unrelated article edits.
+          - Treat `satnaing/astro-paper@35cfa7fbe0b897306d27670d3819e55d5205f3dd` as the initial upstream baseline.
+          EOF
+
+          cat > README.md <<'EOF'
+          # Zblog
+
+          Personal technical blog based on [AstroPaper](https://github.com/satnaing/astro-paper), published with GitHub Pages.
+
+          - Blog: https://zzkkoo8.github.io/Zblog/
+          - Wiki: https://zwiki.gitbook.io/zwiki-docs/
+          - Posts: `src/content/posts/`
+
+          ## Local development
+
+          ```bash
+          pnpm install --frozen-lockfile
+          pnpm dev
+          ```
+
+          Production verification:
+
+          ```bash
+          pnpm lint
+          pnpm format:check
+          pnpm build
+          ```
+
+          AstroPaper upstream baseline: `35cfa7fbe0b897306d27670d3819e55d5205f3dd`.
+          EOF
+
+      - name: Ensure pnpm after template copy
+        uses: pnpm/action-setup@v4
+        with:
+          version: "11.3.0"
+
+      - name: Setup Node.js with cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Format generated files
+        run: pnpm format
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Build
+        run: pnpm build
+
+      - name: Commit verified AstroPaper source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git commit -m "feat: migrate Zblog to AstroPaper"
+          git push origin HEAD:feat/astropaper-zblog
