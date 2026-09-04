@@ -2,6 +2,7 @@
 import LinkButton from "@/components/LinkButton.astro";
 import { tplStr, useTranslations } from "@/i18n";
 import config from "@/config";
+import GiscusComments from "./GiscusComments.astro";
 
 const { shareLinks } = config;
 const t = useTranslations(Astro.currentLocale);
@@ -69,4 +70,6 @@ const items = await Promise.all(
     </a>
     。如果你知道正确写法，也可以使用文章顶部的编辑入口直接发起修改。
   </div>
+
+  <GiscusComments />
 </div>
